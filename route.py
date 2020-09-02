@@ -36,8 +36,8 @@ def post_nonsense():
     db.close()
     return jsonify({
         'success': True,
-        'status_code': 200,
         'nid': nid,
+        'ctime': ctime,
         })
 
 @bp.route('/get')
@@ -72,7 +72,6 @@ def update_nonsense_content():
     db.close()
     return jsonify({
         'success': True,
-        "status_code": 200,
         })
 
 @bp.route('/search')
@@ -86,9 +85,9 @@ def search_nonsense_content():
     db.close()
     return jsonify(res)
 
-@bp.route('/delete')
+@bp.route('/delete', methods=('POST', ))
 def delete_nonsense_content():
-    nid = request.args.get('nid')
+    nid = request.form['nid']
     db = mysql.get_db()
     cur = db.cursor()
     cur.execute(stmt_delete, (nid,))
@@ -97,5 +96,4 @@ def delete_nonsense_content():
     db.close()
     return jsonify({
         'success': True,
-        "status_code": 200,
         })
