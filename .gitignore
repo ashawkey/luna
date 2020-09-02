@@ -1,0 +1,7 @@
+__pycache__
+
+config.py
+instance
+
+uwsgi.log
+uwsgi.pid
