@@ -12,22 +12,24 @@ bp = Blueprint('route', __name__, url_prefix='/api/nonsense/')
 
 @bp.route('/meta')
 def get_nonsense_meta():
+    token = request.args.get('token')
     db = mysql.get_db()
     cur = db.cursor()
-    cur.execute(stmt_meta)
+    cur.execute(stmt_meta, (token,))
     meta = cur.fetchall()
     cur.close()
     db.close()
     return jsonify(meta)
 
-@bp.route('/post', methods=('POST',))
+@bp.route('/post')
 def post_nonsense():
+    token = request.args.get('token')
     ctime = time.time()
     mtime = ctime
     body = '' # empty when created
     db = mysql.get_db()
     cur = db.cursor()
-    cur.execute(stmt_post, (ctime, mtime, body))
+    cur.execute(stmt_post, (ctime, mtime, body, token))
     db.commit()
     # get nid
     cur.execute(stmt_size)
@@ -76,10 +78,11 @@ def update_nonsense_content():
 
 @bp.route('/search')
 def search_nonsense_content():
+    token = request.args.get('token')
     keyword = request.args.get('keyword')
     db = mysql.get_db()
     cur = db.cursor()
-    cur.execute(stmt_search, (keyword,))
+    cur.execute(stmt_search, (keyword, token))
     res = cur.fetchall()
     cur.close()
     db.close()
