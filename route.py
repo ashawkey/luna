@@ -21,12 +21,12 @@ def get_nonsense_meta():
     db.close()
     return jsonify(meta)
 
-@bp.route('/post')
+@bp.route('/post', methods=('POST', ))
 def post_nonsense():
-    token = request.args.get('token')
+    token = request.form['token']
+    body = request.form['body']
     ctime = time.time()
     mtime = ctime
-    body = '' # empty when created
     db = mysql.get_db()
     cur = db.cursor()
     cur.execute(stmt_post, (ctime, mtime, body, token))
@@ -39,7 +39,6 @@ def post_nonsense():
     return jsonify({
         'success': True,
         'nid': nid,
-        'ctime': ctime,
         })
 
 @bp.route('/get')
