@@ -9,6 +9,7 @@ bp = Blueprint('route', __name__, url_prefix='/api/nonsense/')
 #    return "Hello!"
 
 # =========== Nonsense ===========
+# currently, we leave exception handling with frontend. 
 
 @bp.route('/meta')
 def get_nonsense_meta():
@@ -23,19 +24,23 @@ def get_nonsense_meta():
 
 @bp.route('/post', methods=('POST', ))
 def post_nonsense():
-    token = request.form['token']
-    body = request.form['body']
     ctime = time.time()
     mtime = ctime
+    body = request.form['body']
+    token = request.form['token']
+    state = request.form['state']
+
     db = mysql.get_db()
     cur = db.cursor()
-    cur.execute(stmt_post, (ctime, mtime, body, token))
+    cur.execute(stmt_post, (ctime, mtime, body, token, state))
     db.commit()
+
     # get nid
     cur.execute(stmt_size)
     nid = cur.fetchone()[0]
     cur.close()
     db.close()
+
     return jsonify({
         'success': True,
         'nid': nid,
@@ -63,14 +68,17 @@ def get_nonsense_content():
 @bp.route('/update', methods=('POST', ))
 def update_nonsense_content():
     mtime = time.time()
-    nid = request.form['nid']
     body = request.form['body']
+    state = request.form['state']
+    nid = request.form['nid']
+
     db = mysql.get_db()
     cur = db.cursor()
-    cur.execute(stmt_update, (mtime, body, nid))
+    cur.execute(stmt_update, (mtime, body, state, nid))
     db.commit()
     cur.close()
     db.close()
+
     return jsonify({
         'success': True,
         })
@@ -79,23 +87,27 @@ def update_nonsense_content():
 def search_nonsense_content():
     token = request.args.get('token')
     keyword = request.args.get('keyword')
+
     db = mysql.get_db()
     cur = db.cursor()
     cur.execute(stmt_search, (keyword, token))
     res = cur.fetchall()
     cur.close()
     db.close()
+
     return jsonify(res)
 
 @bp.route('/delete', methods=('POST', ))
 def delete_nonsense_content():
     nid = request.form['nid']
+
     db = mysql.get_db()
     cur = db.cursor()
     cur.execute(stmt_delete, (nid,))
     db.commit()
     cur.close()
     db.close()
+    
     return jsonify({
         'success': True,
         })
