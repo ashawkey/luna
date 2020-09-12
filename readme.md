@@ -1,6 +1,6 @@
-# Listener
+# Luna
 
-Backend for NoNSeNSe.
+Backend for [umbra](https://github.com/ashawkey/umbra.git).
 
 Hawia Project.
 
