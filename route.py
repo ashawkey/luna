@@ -91,6 +91,7 @@ def search_yhdm():
         res['results'] = urls
         return jsonify(res)
     except Exception as e:
+        print('[ERROR]', e)
         return jsonify({
             'success': False,
         })
