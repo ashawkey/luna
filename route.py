@@ -27,12 +27,10 @@ def search_nonsense_content():
 
     try:
         res = google_search(keyword, api_key, cse_id, num=10, start=start)
-        if 'items' in res:
-            return jsonify(res['items'])
-        else:
-            return jsonify({
-                'success': False,
-            })
+        return jsonify({
+            'success': True,
+            'results': res['items'] if 'items' in res else [],
+        })
     except Exception as e:
         print('[ERROR]', e)
         return jsonify({
@@ -55,7 +53,7 @@ def search_yhdm():
         candidate_selectors = g.doc(f'//div[@class="lpic"]/ul/li/a/@href')
         # tmpfix: avoid too many inaccurate results
         if len(candidate_selectors) >= 3:
-            candidate_selectors = candidate_selectors[[0]]
+            candidate_selectors = candidate_selectors[0:1]
             print(f'[WARN] too many candidates for {keyword}, only keep the first.')
         # for candidates
         for candidate in candidate_selectors:
