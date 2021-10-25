@@ -49,20 +49,20 @@ def search_yhdm():
     def crawl(keyword):
         urls = []
         g = Grab()
-        g.go(f'http://www.yhdm.so/search/{keyword}/')
+        g.go(f'http://www.yinghuacd.com/search/{keyword}/')
         candidate_selectors = g.doc(f'//div[@class="lpic"]/ul/li/a/@href')
         # tmpfix: avoid too many inaccurate results
         if len(candidate_selectors) >= 3:
-            candidate_selectors = candidate_selectors[0:1]
-            print(f'[WARN] too many candidates for {keyword}, only keep the first.')
+            candidate_selectors = candidate_selectors[0:3]
+            print(f'[WARN] too many candidates for {keyword}, only keep the first three.')
         # for candidates
         for candidate in candidate_selectors:
             g.go(f'http://www.yhdm.so{candidate.text()}')
             episode_selectors = g.doc('//div[@class="movurl"]/ul/li/a/@href')
             # tmpfix: avoid too many episodes
             if len(episode_selectors) >= 30:
-                episode_selectors = episode_selectors[:12]
-                print(f'[WARN] too many episodes, only keep the first 12.')
+                episode_selectors = episode_selectors[:30]
+                print(f'[WARN] too many episodes, only keep the first 30.')
             # for episodes
             for episode in episode_selectors:
                 g.go(f'http://www.yhdm.so{episode.text()}')
